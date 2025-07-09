@@ -1,6 +1,6 @@
 ---
 - name: Setup Nomad Server
-  hosts: local
+  hosts: default
   become: true
   gather_facts: true
   
@@ -43,7 +43,7 @@
     # - name: Move Nomad service file
     #   ansible.builtin.copy:
     #     remote_src: true
-    #     src: /tmp/nomad-server.service
+    #     src: /tmp/nomad.service
     #     dest: /etc/systemd/system/nomad.service
     #     owner: nomad
     #     group: nomad
@@ -57,11 +57,10 @@
     #     group: nomad
     #   loop:
     #     - /tmp/nomad.hcl
-    #     - /tmp/server.hcl
       
-    # - name: Ensure Nomad service is enabled
-    #   ansible.builtin.systemd_service:
-    #     name: nomad
-    #     enabled: true
+    - name: Ensure Nomad service is enabled
+      ansible.builtin.systemd_service:
+        name: nomad
+        enabled: true
 
-    
+# probably need to restart Nomad so ACLs take effect

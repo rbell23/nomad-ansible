@@ -1,6 +1,6 @@
 ---
 - name: Add Hashicorp Repository
-  hosts: local
+  hosts: default
   become: true
   gather_facts: true
 
