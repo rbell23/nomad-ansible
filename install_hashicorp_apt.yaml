@@ -1,0 +1,21 @@
+---
+- name: Add Hashicorp Repository
+  hosts: local
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Add hashicorp apt key
+      ansible.builtin.deb822_repository:
+        name: hashicorp
+        types: [deb]
+        uris:  https://apt.releases.hashicorp.com
+        signed_by: https://apt.releases.hashicorp.com/gpg
+        suites: ["{{ ansible_distribution_release|lower }}"]
+        components: [main]
+        state: present
+        enabled: true
+
+    - name: Update package cache
+      ansible.builtin.apt:
+        update_cache: true

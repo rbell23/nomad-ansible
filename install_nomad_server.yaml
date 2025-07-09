@@ -1,0 +1,67 @@
+---
+- name: Setup Nomad Server
+  hosts: local
+  become: true
+  gather_facts: true
+  
+  vars:
+    nomad_version: 1.10.2-1  # Released 6/9/2025
+
+  tasks:
+    - name: Update repositories cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install Nomad
+      ansible.builtin.apt:
+        name: 
+          - nomad={{ nomad_version }}
+        state: present
+
+    - name: Add Nomad group
+      ansible.builtin.group:
+        name: nomad
+        state: present
+    
+    - name: Add Nomad user
+      ansible.builtin.user:
+        name: nomad
+        group: nomad
+        comment: Nomad user
+        system: true
+        home: /etc/nomad.d
+
+    - name: Create Nomad data directory
+      ansible.builtin.file:
+        path: /opt/nomad
+        state: directory
+        mode: 0755
+        owner: nomad
+        group: nomad
+        recurse: true
+
+    # - name: Move Nomad service file
+    #   ansible.builtin.copy:
+    #     remote_src: true
+    #     src: /tmp/nomad-server.service
+    #     dest: /etc/systemd/system/nomad.service
+    #     owner: nomad
+    #     group: nomad
+
+    # - name: Move Nomad config files
+    #   ansible.builtin.copy:
+    #     remote_src: true
+    #     src: "{{ item }}"
+    #     dest: /etc/nomad.d/
+    #     owner: nomad
+    #     group: nomad
+    #   loop:
+    #     - /tmp/nomad.hcl
+    #     - /tmp/server.hcl
+      
+    # - name: Ensure Nomad service is enabled
+    #   ansible.builtin.systemd_service:
+    #     name: nomad
+    #     enabled: true
+
+    
